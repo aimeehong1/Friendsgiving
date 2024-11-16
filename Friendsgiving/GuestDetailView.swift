@@ -12,6 +12,7 @@ struct GuestDetailView: View {
     @State private var name = ""
     @State private var item = ""
     @State private var notes = ""
+    @State private var selectedCategory: String? = nil
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
@@ -25,8 +26,21 @@ struct GuestDetailView: View {
             Text("Is bringing: ")
                 .bold()
             
-            TextField("Item", text: $item)
-                .textFieldStyle(.roundedBorder)
+            HStack {
+                TextField("Item", text: $item)
+                    .textFieldStyle(.roundedBorder)
+                
+                Text("Item Type: ")
+                    .bold()
+                
+                Picker("", selection: $selectedCategory) {
+                    Text("N/A").tag(nil as String?)
+                    ForEach(Category.allCases, id: \.self) { category in
+                        Text(category.rawValue.capitalized)
+                            .tag(category.rawValue as String?)
+                    }
+                }
+            }
 
             Text("Notes: ")
                 .bold()
@@ -42,6 +56,7 @@ struct GuestDetailView: View {
             name = guest.name
             item = guest.item
             notes = guest.notes
+            selectedCategory = guest.itemCategory
         }
         .navigationBarBackButtonHidden()
         .toolbar {
@@ -55,6 +70,7 @@ struct GuestDetailView: View {
                     guest.name = name
                     guest.item = item
                     guest.notes = notes
+                    guest.itemCategory = selectedCategory
                     modelContext.insert(guest)
                     guard let _ = try? modelContext.save() else {
                         print("😡 ERROR: Save on GuestDetailView did not work.")
@@ -64,6 +80,10 @@ struct GuestDetailView: View {
                 }
             }
         }
+    }
+    
+    enum Category: String, Codable, CaseIterable {
+        case entree, side, dessert, beverage
     }
 }
 

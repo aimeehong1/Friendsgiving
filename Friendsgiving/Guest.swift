@@ -14,6 +14,7 @@ class Guest {
     var name: String
     var item: String
     var notes: String
+    var itemCategory: String? = nil
     
     init(name: String, item: String, notes: String = "") {
         self.name = name
