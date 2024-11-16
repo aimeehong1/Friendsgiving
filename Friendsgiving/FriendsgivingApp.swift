@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct FriendsgivingApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            GuestListView()
+                .modelContainer(for: Guest.self)
         }
+    }
+    
+    init() {
+        print(URL.applicationSupportDirectory.path(percentEncoded: false))
     }
 }
